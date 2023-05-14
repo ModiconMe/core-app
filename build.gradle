@@ -1,0 +1,9 @@
+allprojects {
+    group 'edu.modicon.app'
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+// https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/

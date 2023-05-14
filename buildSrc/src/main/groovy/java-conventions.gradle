@@ -1,0 +1,49 @@
+import org.gradle.api.plugins.jvm.JvmTestSuite
+
+plugins {
+    id 'java'
+    id 'jacoco'
+    id 'jacoco-report-aggregation'
+    id 'jvm-test-suite'
+}
+
+testing {
+    suites {
+        intTest(JvmTestSuite) {
+            dependencies {
+                implementation project
+            }
+        }
+    }
+}
+
+tasks.named('check') {
+    dependsOn(testing.suites.intTest)
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+test {
+    finalizedBy jacocoTestReport
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    executionData intTest
+    reports {
+        xml.required = true
+    }
+        dependsOn test, intTest
+}
+
+reporting {
+    reports {
+        testCodeCoverageReport(JacocoCoverageReport) {
+            testType = TestSuiteType.UNIT_TEST
+            testType = TestSuiteType.INTEGRATION_TEST
+        }
+    }
+}

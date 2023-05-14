@@ -1,0 +1,65 @@
+plugins {
+    id 'java-conventions'
+    id 'spock-conventions'
+    id 'spring-conventions'
+//    id 'intTest' // https://docs.gradle.org/current/userguide/custom_plugins.html#sec:precompiled_plugins
+}
+
+/*
+bom override #1
+https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#managing-dependencies.dependency-management-plugin.customizing
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#appendix.dependency-versions.properties
+//ext ['lombok.version'] = '1.18.22'
+*/
+
+/*
+--all bom versions--
+def managedVersions = dependencyManagement.managedVersions
+tasks.register('printBomVersions') {
+    print managedVersions
+}
+
+dependencyManagement {
+    --excluding transitive dependency #1--
+    dependencies {
+        dependency('org.springframework.boot:spring-boot-starter-web:3.0.1') {
+            exclude 'org.springframework.boot:spring-boot-starter-json'
+        }
+    }
+
+    --no use gradle cache--
+    resolutionStrategy {
+        cacheChangingModulesFor 0, 'seconds'
+    }
+}
+*/
+
+// https://docs.gradle.org/current/userguide/dynamic_versions.html#sec:controlling_dependency_caching_programmatically
+configurations.configureEach {
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+
+dependencies {
+/*
+    bom version override #2
+    implementation 'org.springframework.boot:spring-boot-starter-web:3.0.2'
+
+    excluding transitive dependency #2
+    implementation ('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-json'
+    }
+*/
+    implementation libs.springBootWeb
+    implementation libs.springBootValidation
+
+    runtimeOnly libs.postgreSQL
+
+    implementation libs.openApi
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testImplementation libs.springBootTest
+
+    intTestImplementation libs.springBootTest
+}

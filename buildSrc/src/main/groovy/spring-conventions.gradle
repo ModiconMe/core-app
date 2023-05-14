@@ -1,0 +1,27 @@
+project.plugins.apply('org.springframework.boot')
+project.plugins.apply("io.spring.dependency-management")
+
+// *-plain.jar
+jar {
+    enabled = false
+}
+
+// *.jar bootJar = springBoot
+project.bootJar {
+    archivesBaseName = 'application123'
+    mainClass = 'edu.modicon.app.Main' // attributes 'Start-Class'
+}
+
+project.bootBuildImage {
+    imageName = 'modiconme/application'
+    environment['BPE_APPEND_JAVA_TOOL_OPTIONS'] = '-Xms512m -Xmx1024m -Dspring.profiles.active=dev'
+    tags = ['1', 'latest']
+    publish = true
+    docker {
+        builderRegistry {
+            username = 'ModiconMe'
+            password = 'arcsinwt1'
+
+        }
+    }
+}
