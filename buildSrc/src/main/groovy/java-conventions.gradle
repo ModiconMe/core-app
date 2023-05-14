@@ -4,16 +4,12 @@ plugins {
     id 'java'
     id 'jacoco'
     id 'jacoco-report-aggregation'
-    id 'jvm-test-suite'
 }
 
-testing {
-    suites {
-        intTest(JvmTestSuite) {
-            dependencies {
-                implementation project
-            }
-        }
+testing.suites.register('intTest', JvmTestSuite) {
+    testType = 'intTest'
+    dependencies {
+        implementation project
     }
 }
 
@@ -36,14 +32,10 @@ jacocoTestReport {
     reports {
         xml.required = true
     }
-        dependsOn test, intTest
+    dependsOn test, intTest
 }
 
-reporting {
-    reports {
-        testCodeCoverageReport(JacocoCoverageReport) {
-            testType = TestSuiteType.UNIT_TEST
-            testType = TestSuiteType.INTEGRATION_TEST
-        }
-    }
+reporting.reports.testCodeCoverageReport {
+    testType = TestSuiteType.UNIT_TEST
+    testType = 'intTest'
 }
