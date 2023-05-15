@@ -3,13 +3,19 @@ spring-boot = '3.0.1'
 spring-dependency-management = '1.1.0'
 openApi = '2.1.0'
 java = '17'
+testcontainers = '1.18.1'
 
 [libraries]
 spring-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
 spring-validation = { module = 'org.springframework.boot:spring-boot-starter-validation' }
+spring-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
 spring-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
 
+testcontainers = { module = 'org.testcontainers:postgresql', version.ref = 'testcontainers' }
+
+liquebase = { module = 'org.liquibase:liquibase-core' }
 postgreSQL = { module = 'org.postgresql:postgresql' }
+
 openApi = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-ui', version.ref = 'openApi' }
 lombok = { module = 'org.projectlombok:lombok' }
 

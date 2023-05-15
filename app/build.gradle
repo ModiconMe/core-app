@@ -9,16 +9,20 @@ plugins {
 dependencies {
     implementation libs.spring.web
     implementation libs.spring.validation
+    implementation libs.spring.jdbc
 
     runtimeOnly libs.postgreSQL
 
+    implementation libs.liquebase
     implementation libs.openApi
 
     compileOnly libs.lombok
     annotationProcessor libs.lombok
 
+    testImplementation libs.testcontainers
     testImplementation libs.spring.test
 
+    intTestImplementation libs.testcontainers
     intTestImplementation libs.spring.test
 }
 
