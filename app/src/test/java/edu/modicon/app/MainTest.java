@@ -17,4 +17,14 @@ class MainTest {
 //    void applicationContext() {
 //        assertThat(applicationContext).isNotNull();
 //    }
+
+//    @Test
+//    void shouldReturn_whenDoSmth_withCondition() {
+//        // given
+//        SomeService someService = new SomeService();
+//        // when
+//        someService.hello();
+//
+//        // then
+//    }
 }

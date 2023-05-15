@@ -1,9 +1,33 @@
 plugins {
     id 'java-conventions'
-    id 'spock-conventions'
     id 'spring-conventions'
-//    id 'intTest' // https://docs.gradle.org/current/userguide/custom_plugins.html#sec:precompiled_plugins
+    id 'docker-conventions'
+//    id 'spock-conventions'
+    id 'intTest-conventions'
 }
+
+dependencies {
+    implementation libs.spring.web
+    implementation libs.spring.validation
+
+    runtimeOnly libs.postgreSQL
+
+    implementation libs.openApi
+
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testImplementation libs.spring.test
+
+    intTestImplementation libs.spring.test
+}
+
+/*
+// https://docs.gradle.org/current/userguide/dynamic_versions.html#sec:controlling_dependency_caching_programmatically
+configurations.configureEach {
+    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+}
+*/
 
 /*
 bom override #1
@@ -34,13 +58,9 @@ dependencyManagement {
 }
 */
 
-// https://docs.gradle.org/current/userguide/dynamic_versions.html#sec:controlling_dependency_caching_programmatically
-configurations.configureEach {
-    resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
-}
-
-dependencies {
 /*
+dependencies {
+
     bom version override #2
     implementation 'org.springframework.boot:spring-boot-starter-web:3.0.2'
 
@@ -48,18 +68,6 @@ dependencies {
     implementation ('org.springframework.boot:spring-boot-starter-web') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-json'
     }
-*/
-    implementation libs.springBootWeb
-    implementation libs.springBootValidation
 
-    runtimeOnly libs.postgreSQL
-
-    implementation libs.openApi
-
-    compileOnly libs.lombok
-    annotationProcessor libs.lombok
-
-    testImplementation libs.springBootTest
-
-    intTestImplementation libs.springBootTest
 }
+*/

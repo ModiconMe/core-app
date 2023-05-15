@@ -1,0 +1,18 @@
+[versions]
+spring-boot = '3.0.1'
+spring-dependency-management = '1.1.0'
+openApi = '2.1.0'
+java = '17'
+
+[libraries]
+spring-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
+spring-validation = { module = 'org.springframework.boot:spring-boot-starter-validation' }
+spring-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
+
+postgreSQL = { module = 'org.postgresql:postgresql' }
+openApi = { module = 'org.springdoc:springdoc-openapi-starter-webmvc-ui', version.ref = 'openApi' }
+lombok = { module = 'org.projectlombok:lombok' }
+
+plugin-spring-dependencyManagement = { module = 'io.spring.gradle:dependency-management-plugin', version.ref = 'spring-dependency-management' }
+plugin-spring-boot = { module = 'org.springframework.boot:spring-boot-gradle-plugin', version.ref = 'spring-boot' }
+plugin-docker = 'com.bmuschko.docker-spring-boot-application:com.bmuschko.docker-spring-boot-application.gradle.plugin:9.3.1'

@@ -1,0 +1,21 @@
+// https://bmuschko.github.io/gradle-docker-plugin/
+
+project.plugins.apply('com.bmuschko.docker-spring-boot-application')
+
+def dockerRegistryHost = System.getProperty("docker_registry_host", null)
+def dockerRegistryPassword = System.getProperty("docker_registry_password", null)
+
+def imageNameVersion = "${dockerRegistryHost}/${project.name}:${version.toString().replace("-SNAPSHOT", "")}"
+def imageNameLatest = "${dockerRegistryHost}/${project.name}:latest"
+
+project.docker.registryCredentials {
+    username = dockerRegistryHost
+    password = dockerRegistryPassword
+}
+
+project.docker.springBootApplication {
+    baseImage = 'eclipse-temurin:17-jre-alpine'
+    maintainer = 'modiconme'
+    images = [imageNameVersion, imageNameLatest]
+    jvmArgs = ['$JAVA_ARGS', '$APPLICATION_ARGS']
+}

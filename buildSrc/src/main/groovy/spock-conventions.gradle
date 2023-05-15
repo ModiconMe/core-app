@@ -2,8 +2,29 @@ plugins {
     id 'groovy'
 }
 
+ext {
+    spockVersion = '2.4-M1-groovy-4.0'
+    groovyVersion = '4.0.9'
+}
+
 dependencies {
-    testImplementation 'org.spockframework:spock-spring:2.4-M1-groovy-4.0'
-    testImplementation 'org.spockframework:spock-core:2.4-M1-groovy-4.0'
-    testImplementation 'org.apache.groovy:groovy-all:4.0.9'
+    testImplementation "org.spockframework:spock-spring:${spockVersion}"
+    testImplementation "org.spockframework:spock-core:${spockVersion}"
+    testImplementation "org.apache.groovy:groovy-all:${groovyVersion}"
+}
+
+sourceSets {
+    intTest {
+        groovy {
+            compileClasspath += main.output
+            runtimeClasspath += main.output
+//          srcDirs files('src/intTest/groovy') // todo test
+        }
+    }
+}
+
+dependencies {
+    intTestImplementation "org.spockframework:spock-spring:${spockVersion}"
+    intTestImplementation "org.spockframework:spock-core:${spockVersion}"
+    intTestImplementation "org.apache.groovy:groovy-all:${groovyVersion}"
 }

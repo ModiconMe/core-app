@@ -1,5 +1,11 @@
+// https://github.com/gradle/gradle/issues/14430#issuecomment-687148122
+
 project.plugins.apply('org.springframework.boot')
 project.plugins.apply("io.spring.dependency-management")
+
+ext {
+    hasSpring = true
+}
 
 // *-plain.jar
 jar {
@@ -12,16 +18,15 @@ project.bootJar {
     mainClass = 'edu.modicon.app.Main' // attributes 'Start-Class'
 }
 
-project.bootBuildImage {
-    imageName = 'modiconme/application'
-    environment['BPE_APPEND_JAVA_TOOL_OPTIONS'] = '-Xms512m -Xmx1024m -Dspring.profiles.active=dev'
-    tags = ['1', 'latest']
-    publish = true
-    docker {
-        builderRegistry {
-            username = 'ModiconMe'
-            password = 'arcsinwt1'
-
-        }
-    }
-}
+//bootJar {
+//    manifest {
+//        attributes(
+//                'Organization': 'MyOrg',
+//                'Artifact': 'Spring App',
+//                'Implementation-Version': rootProject.version,
+//                'Created-By': "${System.getProperty('java.version')} (${System.getProperty('java.vendor')})",
+//                'Built-With': "gradle-${project.getGradle().getGradleVersion()}, groovy-${GroovySystem.getVersion()}",
+//                'Build-Time': new SimpleDateFormat('yyyy-MM-dd HH').format(new Date()),
+//        )
+//    }
+//}

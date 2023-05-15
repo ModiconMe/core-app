@@ -1,0 +1,19 @@
+import org.gradle.api.plugins.jvm.JvmTestSuite
+
+plugins {
+    id 'jvm-test-suite'
+}
+
+testing.suites.register('intTest', JvmTestSuite) {
+    testType = 'intTest'
+    dependencies {
+        implementation project
+    }
+}
+
+project.intTest.shouldRunAfter test
+project.intTest.useJUnitPlatform()
+
+tasks.named('check') {
+    dependsOn(testing.suites.intTest)
+}
