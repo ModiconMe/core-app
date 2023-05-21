@@ -1,6 +1,6 @@
 package edu.modicon.app.infrastructure.security;
 
-import lombok.Builder;
+import edu.modicon.app.domain.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,7 +9,6 @@ import java.util.Collection;
 /**
  * Application user credentials. Stored in SecurityApplication context
  */
-@Builder
 public record AppUserDetails(
         String email,
         String password
@@ -50,4 +49,11 @@ public record AppUserDetails(
         return true;
     }
 
+    public static AppUserDetails fromUser(User user) {
+        return new AppUserDetails(user.getEmail(), user.getPassword());
+    }
+
+    public static AppUserDetails ofUsername(String username) {
+        return new AppUserDetails(username, null);
+    }
 }

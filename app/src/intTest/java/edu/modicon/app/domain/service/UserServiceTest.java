@@ -1,10 +1,7 @@
 package edu.modicon.app.domain.service;
 
 import edu.modicon.app.BaseTest;
-import edu.modicon.app.application.dto.ApiException;
-import edu.modicon.app.application.dto.UserDto;
-import edu.modicon.app.application.dto.UserLoginRequest;
-import edu.modicon.app.application.dto.UserRegistrationRequest;
+import edu.modicon.app.application.dto.*;
 import edu.modicon.app.infrastructure.security.AppUserDetails;
 import edu.modicon.app.infrastructure.security.jwt.JwtUtils;
 import org.junit.jupiter.api.Test;
@@ -23,7 +20,7 @@ class UserServiceTest extends BaseTest {
     }
 
     @Test
-    void shouldRegisterUser() {
+    void shouldRegisterUser(@Autowired JwtUtils jwtUtils) {
         // given
         UserRegistrationRequest request = new UserRegistrationRequest(
                 FAKER.name().username(),
@@ -34,10 +31,12 @@ class UserServiceTest extends BaseTest {
         // when
         UserDto response = userService.registration(request);
 
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+
         // then
         assertThat(response.username()).isEqualTo(request.username());
         assertThat(response.email()).isEqualTo(request.email());
-        assertThat(response.token()).isEqualTo("TOKEN");
+        assertThat(response.token()).isEqualTo(token);
         assertThat(response.bio()).isNull();
         assertThat(response.image()).isNull();
     }
@@ -146,10 +145,7 @@ class UserServiceTest extends BaseTest {
         // when
         UserDto response = userService.login(request);
 
-        AppUserDetails build = AppUserDetails.builder()
-                .email(request.email())
-                .build();
-        String token = jwtUtils.generateAccessToken(build);
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
 
         // then
         assertThat(response.username()).isEqualTo("test1");
@@ -186,9 +182,7 @@ class UserServiceTest extends BaseTest {
     @Test
     void shouldGetCurrentUser(@Autowired JwtUtils jwtUtils) {
         // given
-        AppUserDetails request = AppUserDetails.builder()
-                .email("test1@mail.com")
-                .build();
+        AppUserDetails request = AppUserDetails.ofUsername("test1@mail.com");
 
         // when
         UserDto response = userService.currentUser(request);
@@ -206,14 +200,100 @@ class UserServiceTest extends BaseTest {
     @Test
     void shouldThrow_whenGetCurrent_withWrongEmail() {
         // given
-        AppUserDetails request = AppUserDetails.builder()
-                .email("not_exist1@mail.com")
-                .build();
+        AppUserDetails request = AppUserDetails.ofUsername("not_exist1@mail.com");
 
         // when
         // then
         assertThatThrownBy(() -> userService.currentUser(request))
                 .isInstanceOf(ApiException.class)
                 .hasMessageContaining("User not found");
+    }
+
+    @Test
+    void shouldUpdateUser(@Autowired JwtUtils jwtUtils) {
+        // given
+        UserUpdateRequest request = new UserUpdateRequest(
+                "newTest",
+                "newTest@mail.com",
+                "newPassword",
+                "newBio",
+                "newImage",
+                "test1@mail.com"
+        );
+
+        // when
+        UserDto response = userService.update(request);
+
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+
+        // then
+        assertThat(response.username()).isEqualTo(request.username());
+        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.token()).isEqualTo(token);
+        assertThat(response.bio()).isEqualTo(request.bio());
+        assertThat(response.image()).isEqualTo(request.image());
+    }
+
+    @Test
+    void shouldUpdateUser_withOldAndNullAndEmptyValProvided(@Autowired JwtUtils jwtUtils) {
+        // given
+        UserUpdateRequest request = new UserUpdateRequest(
+                "test1",
+                "newTest@mail.com",
+                "newPassword",
+                " ",
+                null,
+                "test1@mail.com"
+        );
+
+        // when
+        UserDto response = userService.update(request);
+
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+
+        // then
+        assertThat(response.username()).isEqualTo(request.username());
+        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.token()).isEqualTo(token);
+        assertThat(response.bio()).isEqualTo("bio1");
+        assertThat(response.image()).isEqualTo("image1");
+    }
+
+    @Test
+    void shouldThrow_whenUpdateUser_withExistsEmail() {
+        // given
+        UserUpdateRequest request = new UserUpdateRequest(
+                "newTest",
+                "test2@mail.com",
+                "newPassword",
+                "newBio",
+                "newImage",
+                "test1@mail.com"
+        );
+
+        // when
+        // then
+        assertThatThrownBy(() -> userService.update(request))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("Duplicate email");
+    }
+
+    @Test
+    void shouldThrow_whenUpdateUser_withExistsUsername() {
+        // given
+        UserUpdateRequest request = new UserUpdateRequest(
+                "test2",
+                "newTest@mail.com",
+                "newPassword",
+                "newBio",
+                "newImage",
+                "test1@mail.com"
+        );
+
+        // when
+        // then
+        assertThatThrownBy(() -> userService.update(request))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("Duplicate username");
     }
 }

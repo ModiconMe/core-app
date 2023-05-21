@@ -14,4 +14,6 @@ public interface UserRepository {
 
     Long save(User user);
 
+    void update(User user);
+
 }

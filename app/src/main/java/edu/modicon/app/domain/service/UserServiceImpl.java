@@ -3,6 +3,7 @@ package edu.modicon.app.domain.service;
 import edu.modicon.app.application.dto.UserDto;
 import edu.modicon.app.application.dto.UserLoginRequest;
 import edu.modicon.app.application.dto.UserRegistrationRequest;
+import edu.modicon.app.application.dto.UserUpdateRequest;
 import edu.modicon.app.domain.mapper.UserMapper;
 import edu.modicon.app.domain.model.User;
 import edu.modicon.app.domain.repository.UserRepository;
@@ -12,11 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
 import static edu.modicon.app.application.dto.ApiException.*;
+import static org.springframework.util.StringUtils.hasText;
 
 @Service
 @Slf4j
@@ -33,21 +34,16 @@ public class UserServiceImpl implements UserService {
         Optional<User> byEmail = userRepository.findByEmail(request.email());
         if (byEmail.isEmpty()) {
             log.info("User not found: [request='{}']", request);
-            throw notFound("User not found", request);
+            throw notFound("User not found");
         }
 
         User user = byEmail.get();
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             log.info("Wrong password: [request='{}']", request);
-            throw unauthorized("Wrong password", request);
+            throw unauthorized("Wrong password");
         }
 
-        AppUserDetails userDetails = AppUserDetails.builder()
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .build();
-
-        String jwtToken = jwtUtils.generateAccessToken(userDetails);
+        String jwtToken = jwtUtils.generateAccessToken(AppUserDetails.fromUser(user));
 
         return userMapper.apply(user).withToken(jwtToken);
     }
@@ -58,29 +54,22 @@ public class UserServiceImpl implements UserService {
 
         if (userRepository.findByEmail(request.email()).isPresent()) {
             log.info("User already exist: [request='{}']", request);
-            throw unprocessableEntity("User already exist", request);
+            throw unprocessableEntity("User already exist");
         }
 
         String password = request.password();
-        if (!StringUtils.hasText(password)) {
+        if (!hasText(password)) {
             log.info("Empty password: [request='{}']", request);
-            throw unprocessableEntity("Empty password", request);
+            throw unprocessableEntity("Empty password");
         }
 
-        User user = User.builder()
+        var user = User.builder()
                 .email(request.email())
                 .username(request.username())
-                .password(passwordEncoder.encode(password))
-                .build();
-        Long userId = userRepository.save(user);
+                .password(passwordEncoder.encode(password));
+        Long userId = userRepository.save(user.build());
 
-        Optional<UserDto> userDto = userRepository.findById(userId).map(userMapper);
-        if (userDto.isEmpty()) {
-            log.info("User not found: [request='{}', userId='{}']", request, userId);
-            throw notFound("User not found", request, userId);
-        }
-
-        UserDto response = userDto.get();
+        UserDto response = getValidResponse(user.id(userId).build());
         log.info("Successfully register user: [userDto='{}']", response);
         return response;
     }
@@ -94,13 +83,72 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = byEmail.get();
-        AppUserDetails userDetails = AppUserDetails.builder()
-                .email(user.getEmail())
-                .password(user.getPassword())
-                .build();
-
-        String jwtToken = jwtUtils.generateAccessToken(userDetails);
+        String jwtToken = jwtUtils.generateAccessToken(AppUserDetails.fromUser(user));
 
         return userMapper.apply(user).withToken(jwtToken);
+    }
+
+    @Override
+    public UserDto update(UserUpdateRequest request) {
+        log.info("Start update user: [request='{}']", request);
+
+        Optional<User> byEmail = userRepository.findByEmail(request.currentUsername());
+        if (byEmail.isEmpty()) {
+            log.info("User not found: [request='{}']", request);
+            throw notFound("User not found", request);
+        }
+
+        User user = byEmail.get();
+        checkUsername(request, user);
+        checkEmail(request, user);
+
+        User newUser = user.toBuilder()
+                .username(request.getValidUsername(user.getUsername()))
+                .email(request.getValidEmail(user.getEmail()))
+                .password(request.getValidPassword(user.getPassword(), passwordEncoder))
+                .bio(request.getValidBio(user.getBio()))
+                .image(request.getValidImage(user.getImage()))
+                .build();
+
+        userRepository.update(newUser);
+
+        UserDto response = getValidResponse(newUser);
+        log.info("Successfully update user: [userDto='{}']", response);
+        return response;
+    }
+
+    private UserDto getValidResponse(User user) {
+        UserDto response = userRepository.findById(user.getId())
+                .map(userMapper)
+                .orElseThrow(() -> {
+                    log.info("User not found: [userId='{}']", user.getId());
+                    throw notFound("User not found");
+                });
+
+        String jwtToken = jwtUtils.generateAccessToken(AppUserDetails.fromUser(user));
+
+        return response.withToken(jwtToken);
+    }
+
+    private void checkUsername(UserUpdateRequest request, User user) {
+        if (hasText(request.username()) && !request.username().equals(user.getUsername())) {
+            Optional<User> checkUsername = userRepository.findByUsername(request.username())
+                    .filter(found -> !found.getId().equals(user.getId()));
+            if (checkUsername.isPresent()) {
+                log.info("Duplicate username: [request='{}']", request);
+                throw unprocessableEntity("Duplicate username");
+            }
+        }
+    }
+
+    private void checkEmail(UserUpdateRequest request, User user) {
+        if (hasText(request.email()) && !request.email().equals(user.getEmail())) {
+            Optional<User> checkEmail = userRepository.findByEmail(request.email())
+                    .filter(found -> !found.getId().equals(user.getId()));
+            if (checkEmail.isPresent()) {
+                log.info("Duplicate email: [request='{}']", request);
+                throw unprocessableEntity("Duplicate email");
+            }
+        }
     }
 }

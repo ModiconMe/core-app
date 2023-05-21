@@ -25,5 +25,16 @@ abstract public class Sql {
                 INSERT INTO users (email, username, password, bio, image)
                 VALUES (:email, :username, :password, :bio, :image)
                 """;
+
+        public static final String UPDATE = """
+                UPDATE users
+                   SET email = :email,
+                       username = :username,
+                       password = :password,
+                       bio = :bio,
+                       image = :image
+                 WHERE id = :id
+                """;
+
     }
 }

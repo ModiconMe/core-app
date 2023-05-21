@@ -16,11 +16,7 @@ public class AccountDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByEmail(username)
-                .map(user ->
-                        AppUserDetails.builder()
-                                .email(user.getEmail())
-                                .password(user.getPassword())
-                                .build())
+                .map(AppUserDetails::fromUser)
                 .orElse(null);
     }
 

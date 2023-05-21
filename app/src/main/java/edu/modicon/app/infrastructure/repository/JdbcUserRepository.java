@@ -58,4 +58,17 @@ public class JdbcUserRepository extends BaseDao implements UserRepository {
         return insert(Sql.User.SAVE, parameters);
     }
 
+    @Override
+    public void update(User user) {
+        SqlParameterSource parameters = parameters(User.class)
+                .add("email", user.getEmail())
+                .add("username", user.getUsername())
+                .add("password", user.getPassword())
+                .add("image", user.getImage())
+                .add("bio", user.getBio())
+                .add("id", user.getId())
+                .build();
+        update(Sql.User.UPDATE, parameters);
+    }
+
 }
