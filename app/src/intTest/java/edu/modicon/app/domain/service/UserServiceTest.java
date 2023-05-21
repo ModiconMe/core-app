@@ -182,4 +182,38 @@ class UserServiceTest extends BaseTest {
                 .isInstanceOf(ApiException.class)
                 .hasMessageContaining("Wrong password");
     }
+
+    @Test
+    void shouldGetCurrentUser(@Autowired JwtUtils jwtUtils) {
+        // given
+        AppUserDetails request = AppUserDetails.builder()
+                .email("test1@mail.com")
+                .build();
+
+        // when
+        UserDto response = userService.currentUser(request);
+
+        String token = jwtUtils.generateAccessToken(request);
+
+        // then
+        assertThat(response.username()).isEqualTo("test1");
+        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.token()).isEqualTo(token);
+        assertThat(response.bio()).isEqualTo("bio1");
+        assertThat(response.image()).isEqualTo("image1");
+    }
+
+    @Test
+    void shouldThrow_whenGetCurrent_withWrongEmail() {
+        // given
+        AppUserDetails request = AppUserDetails.builder()
+                .email("not_exist1@mail.com")
+                .build();
+
+        // when
+        // then
+        assertThatThrownBy(() -> userService.currentUser(request))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("User not found");
+    }
 }

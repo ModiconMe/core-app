@@ -85,4 +85,22 @@ public class UserServiceImpl implements UserService {
         return response;
     }
 
+    @Override
+    public UserDto currentUser(AppUserDetails request) {
+        Optional<User> byEmail = userRepository.findByEmail(request.email());
+        if (byEmail.isEmpty()) {
+            log.info("User not found: [request='{}']", request);
+            throw notFound("User not found", request);
+        }
+
+        User user = byEmail.get();
+        AppUserDetails userDetails = AppUserDetails.builder()
+                .email(user.getEmail())
+                .password(user.getPassword())
+                .build();
+
+        String jwtToken = jwtUtils.generateAccessToken(userDetails);
+
+        return userMapper.apply(user).withToken(jwtToken);
+    }
 }
