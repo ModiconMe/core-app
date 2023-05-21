@@ -18,6 +18,7 @@ jwt-impl = { module = 'io.jsonwebtoken:jjwt-impl', version.ref = 'jjwt' }
 jwt-jackson = { module = 'io.jsonwebtoken:jjwt-jackson', version.ref = 'jjwt' }
 
 testcontainers = { module = 'org.testcontainers:postgresql', version.ref = 'testcontainers' }
+faker = 'com.github.javafaker:javafaker:1.0.2'
 
 liquebase = { module = 'org.liquibase:liquibase-core' }
 postgreSQL = { module = 'org.postgresql:postgresql' }

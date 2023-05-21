@@ -13,7 +13,7 @@ public class UserMapper implements Function<User, UserDto> {
         return UserDto.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .password(user.getPassword())
+                .token("TOKEN")
                 .bio(user.getBio())
                 .image(user.getImage())
                 .build();

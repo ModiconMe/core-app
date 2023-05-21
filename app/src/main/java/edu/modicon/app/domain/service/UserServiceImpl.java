@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -32,15 +34,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto registration(UserRegistrationRequest request) {
+        log.info("Start register user: [request='{}']", request);
+
         if (userRepository.findByEmail(request.email()).isPresent()) {
             log.info("User already exist: [request='{}']", request);
             throw unprocessableEntity("User already exist: [request='%s']", request);
         }
 
+        String password = request.password();
+        if (!StringUtils.hasText(password)) {
+            log.info("Empty password: [request='{}']", request);
+            throw unprocessableEntity("Empty password: [request='%s']", request);
+        }
+
         User user = User.builder()
                 .email(request.email())
                 .username(request.username())
-                .password(passwordEncoder.encode(request.password()))
+                .password(passwordEncoder.encode(password))
                 .build();
         Long userId = userRepository.save(user);
 
@@ -50,7 +60,9 @@ public class UserServiceImpl implements UserService {
             throw notFound("User not found: [request='%s', userId='%s']", request, userId);
         }
 
-        return userDto.get();
+        UserDto response = userDto.get();
+        log.info("Successfully register user: [userDto='{}']", response);
+        return response;
     }
 
 }

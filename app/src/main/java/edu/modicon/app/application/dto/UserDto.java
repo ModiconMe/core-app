@@ -9,7 +9,7 @@ import lombok.Builder;
 public record UserDto(
         @NotEmpty @Size(min = 1, max = 128) String username,
         @Email @Size(min = 1, max = 128) String email,
-        @NotEmpty @Size(min = 8, max = 64) String password,
+        @NotEmpty String token,
         String bio,
         String image
 ) {

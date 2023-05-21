@@ -4,13 +4,14 @@ sourceSets {
             compileClasspath += sourceSets.main.output
             runtimeClasspath += sourceSets.main.output
         }
-        resources.srcDirs 'src/intTest/resources'
     }
 }
 
 configurations {
     intTestImplementation.extendsFrom implementation
     intTestRuntimeOnly.extendsFrom runtimeOnly
+    intTestCompileOnly.extendsFrom compileOnly
+    intTestAnnotationProccessor.extendsFrom annotationProcessor
 }
 
 tasks.register('intTest', Test) {

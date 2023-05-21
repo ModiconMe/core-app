@@ -26,6 +26,10 @@ dependencies {
     testImplementation libs.testcontainers
     testImplementation libs.spring.test
 
+    intTestCompileOnly libs.lombok
+    intTestAnnotationProccessor libs.lombok
+
+    intTestImplementation libs.faker
     intTestImplementation libs.testcontainers
     intTestImplementation libs.spring.test
 }
