@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class Article {
 
+    // todo test validation annotation
     @EqualsAndHashCode.Include
     private final Long id;
     private final String slug;

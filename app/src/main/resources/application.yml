@@ -11,3 +11,9 @@ spring:
 logging:
   level:
     root: info
+
+jwt:
+  sign-key: 123
+  token-prefix: Token
+  valid-time: 1000
+  issuer: core-app

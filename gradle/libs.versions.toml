@@ -4,12 +4,18 @@ spring-dependency-management = '1.1.0'
 openApi = '2.1.0'
 java = '17'
 testcontainers = '1.18.1'
+jjwt='0.11.5'
 
 [libraries]
 spring-web = { module = 'org.springframework.boot:spring-boot-starter-web' }
 spring-validation = { module = 'org.springframework.boot:spring-boot-starter-validation' }
 spring-jdbc = { module = 'org.springframework.boot:spring-boot-starter-data-jdbc' }
+spring-security = { module = 'org.springframework.boot:spring-boot-starter-security' }
 spring-test = { module = 'org.springframework.boot:spring-boot-starter-test' }
+
+jwt-api = { module = 'io.jsonwebtoken:jjwt-api', version.ref = 'jjwt' }
+jwt-impl = { module = 'io.jsonwebtoken:jjwt-impl', version.ref = 'jjwt' }
+jwt-jackson = { module = 'io.jsonwebtoken:jjwt-jackson', version.ref = 'jjwt' }
 
 testcontainers = { module = 'org.testcontainers:postgresql', version.ref = 'testcontainers' }
 

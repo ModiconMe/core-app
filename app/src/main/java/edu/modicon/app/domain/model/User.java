@@ -2,17 +2,21 @@ package edu.modicon.app.domain.model;
 
 import lombok.*;
 
+@Setter
+@Getter
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Builder(toBuilder = true)
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @EqualsAndHashCode.Include
-    private final Long id;
-    private final String email;
-    private final String username;
-    private final String bio;
-    private final String image;
+    private Long id;
+    private String email;
+    private String username;
+    private String password;
+    private String bio;
+    private String image;
 
 }
