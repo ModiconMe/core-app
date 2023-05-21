@@ -13,7 +13,7 @@ logging:
     root: info
 
 jwt:
-  sign-key: 123
+  sign-key: 2rG3s3FhFJrW8FlJY4IwDOkUikVHVmVHZ7kRrRs73WBnBAnIvsUBXXCb3esvBcYtvRMuUeuGBetVjhulEuRDg5oXhYQGJqwlsT84
   token-prefix: Token
   valid-time: 1000
   issuer: core-app

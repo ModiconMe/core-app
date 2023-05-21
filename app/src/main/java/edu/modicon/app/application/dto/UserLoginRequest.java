@@ -10,4 +10,11 @@ public record UserLoginRequest(
         @Email @Size(min = 1, max = 128) String email,
         @NotEmpty @Size(min = 8, max = 64) String password
 ) {
+
+    @Override
+    public String toString() {
+        return "UserLoginRequest{" +
+               "email='" + email + '\'' +
+               '}';
+    }
 }

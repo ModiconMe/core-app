@@ -15,6 +15,7 @@ public class User {
     private Long id;
     private String email;
     private String username;
+    @ToString.Exclude
     private String password;
     private String bio;
     private String image;

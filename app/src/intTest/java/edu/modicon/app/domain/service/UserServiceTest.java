@@ -3,8 +3,12 @@ package edu.modicon.app.domain.service;
 import edu.modicon.app.BaseTest;
 import edu.modicon.app.application.dto.ApiException;
 import edu.modicon.app.application.dto.UserDto;
+import edu.modicon.app.application.dto.UserLoginRequest;
 import edu.modicon.app.application.dto.UserRegistrationRequest;
+import edu.modicon.app.infrastructure.security.AppUserDetails;
+import edu.modicon.app.infrastructure.security.jwt.JwtUtils;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -115,7 +119,7 @@ class UserServiceTest extends BaseTest {
         // then
         assertThatThrownBy(() -> userService.registration(request))
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining("Empty password:");
+                .hasMessageContaining("Empty password");
     }
 
     @Test
@@ -131,6 +135,51 @@ class UserServiceTest extends BaseTest {
         // then
         assertThatThrownBy(() -> userService.registration(request))
                 .isInstanceOf(ApiException.class)
-                .hasMessageContaining("Empty password:");
+                .hasMessageContaining("Empty password");
+    }
+
+    @Test
+    void shouldLoginUser(@Autowired JwtUtils jwtUtils) {
+        // given
+        UserLoginRequest request = new UserLoginRequest("test1@mail.com", "password1");
+
+        // when
+        UserDto response = userService.login(request);
+
+        AppUserDetails build = AppUserDetails.builder()
+                .email(request.email())
+                .build();
+        String token = jwtUtils.generateAccessToken(build);
+
+        // then
+        assertThat(response.username()).isEqualTo("test1");
+        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.token()).isEqualTo(token);
+        assertThat(response.bio()).isEqualTo("bio1");
+        assertThat(response.image()).isEqualTo("image1");
+    }
+
+    @Test
+    void shouldThrow_whenLoginUser_withWrongEmail() {
+        // given
+        UserLoginRequest request = new UserLoginRequest("not_exist1@mail.com", "password1");
+
+        // when
+        // then
+        assertThatThrownBy(() -> userService.login(request))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("User not found");
+    }
+
+    @Test
+    void shouldThrow_whenLoginUser_withWrongPassword() {
+        // given
+        UserLoginRequest request = new UserLoginRequest("test1@mail.com", "not_exist1");
+
+        // when
+        // then
+        assertThatThrownBy(() -> userService.login(request))
+                .isInstanceOf(ApiException.class)
+                .hasMessageContaining("Wrong password");
     }
 }
