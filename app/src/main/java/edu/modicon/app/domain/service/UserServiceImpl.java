@@ -1,9 +1,6 @@
 package edu.modicon.app.domain.service;
 
-import edu.modicon.app.application.dto.UserDto;
-import edu.modicon.app.application.dto.UserLoginRequest;
-import edu.modicon.app.application.dto.UserRegistrationRequest;
-import edu.modicon.app.application.dto.UserUpdateRequest;
+import edu.modicon.app.application.dto.user.*;
 import edu.modicon.app.domain.mapper.UserMapper;
 import edu.modicon.app.domain.model.User;
 import edu.modicon.app.domain.repository.UserRepository;
@@ -30,48 +27,48 @@ public class UserServiceImpl implements UserService {
     private final JwtUtils jwtUtils;
 
     @Override
-    public UserDto login(UserLoginRequest request) {
-        Optional<User> byEmail = userRepository.findByEmail(request.email());
+    public UserLoginResponse login(UserLoginRequest request) {
+        Optional<User> byEmail = userRepository.findByEmail(request.getEmail());
         if (byEmail.isEmpty()) {
             log.info("User not found: [request='{}']", request);
             throw notFound("User not found");
         }
 
         User user = byEmail.get();
-        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
             log.info("Wrong password: [request='{}']", request);
             throw unauthorized("Wrong password");
         }
 
         String jwtToken = jwtUtils.generateAccessToken(AppUserDetails.fromUser(user));
 
-        return userMapper.apply(user).withToken(jwtToken);
+        return new UserLoginResponse(userMapper.apply(user).withToken(jwtToken));
     }
 
     @Override
-    public UserDto registration(UserRegistrationRequest request) {
+    public UserRegistrationResponse registration(UserRegistrationRequest request) {
         log.info("Start register user: [request='{}']", request);
 
-        if (userRepository.findByEmail(request.email()).isPresent()) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             log.info("User already exist: [request='{}']", request);
             throw unprocessableEntity("User already exist");
         }
 
-        String password = request.password();
+        String password = request.getPassword();
         if (!hasText(password)) {
             log.info("Empty password: [request='{}']", request);
             throw unprocessableEntity("Empty password");
         }
 
         var user = User.builder()
-                .email(request.email())
-                .username(request.username())
+                .email(request.getEmail())
+                .username(request.getUsername())
                 .password(passwordEncoder.encode(password));
         Long userId = userRepository.save(user.build());
 
-        UserDto response = getValidResponse(user.id(userId).build());
-        log.info("Successfully register user: [userDto='{}']", response);
-        return response;
+        UserDto dto = getValidResponse(user.id(userId).build());
+        log.info("Successfully register user: [userDto='{}']", dto);
+        return new UserRegistrationResponse(dto);
     }
 
     @Override
@@ -89,10 +86,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto update(UserUpdateRequest request) {
+    public UserUpdateResponse update(UserUpdateRequest request) {
         log.info("Start update user: [request='{}']", request);
 
-        Optional<User> byEmail = userRepository.findByEmail(request.currentUsername());
+        Optional<User> byEmail = userRepository.findByEmail(request.getCurrentUsername());
         if (byEmail.isEmpty()) {
             log.info("User not found: [request='{}']", request);
             throw notFound("User not found", request);
@@ -112,9 +109,9 @@ public class UserServiceImpl implements UserService {
 
         userRepository.update(newUser);
 
-        UserDto response = getValidResponse(newUser);
-        log.info("Successfully update user: [userDto='{}']", response);
-        return response;
+        UserDto dto = getValidResponse(newUser);
+        log.info("Successfully update user: [userDto='{}']", dto);
+        return new UserUpdateResponse(dto);
     }
 
     private UserDto getValidResponse(User user) {
@@ -131,8 +128,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkUsername(UserUpdateRequest request, User user) {
-        if (hasText(request.username()) && !request.username().equals(user.getUsername())) {
-            Optional<User> checkUsername = userRepository.findByUsername(request.username())
+        if (hasText(request.getUsername()) && !request.getUsername().equals(user.getUsername())) {
+            Optional<User> checkUsername = userRepository.findByUsername(request.getUsername())
                     .filter(found -> !found.getId().equals(user.getId()));
             if (checkUsername.isPresent()) {
                 log.info("Duplicate username: [request='{}']", request);
@@ -142,8 +139,8 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkEmail(UserUpdateRequest request, User user) {
-        if (hasText(request.email()) && !request.email().equals(user.getEmail())) {
-            Optional<User> checkEmail = userRepository.findByEmail(request.email())
+        if (hasText(request.getEmail()) && !request.getEmail().equals(user.getEmail())) {
+            Optional<User> checkEmail = userRepository.findByEmail(request.getEmail())
                     .filter(found -> !found.getId().equals(user.getId()));
             if (checkEmail.isPresent()) {
                 log.info("Duplicate email: [request='{}']", request);

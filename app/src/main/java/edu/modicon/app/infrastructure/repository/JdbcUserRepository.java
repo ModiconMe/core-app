@@ -48,7 +48,7 @@ public class JdbcUserRepository extends BaseDao implements UserRepository {
 
     @Override
     public Long save(User user) {
-        SqlParameterSource parameters = parameters(User.class)
+        SqlParameterSource parameters = parameters()
                 .add("email", user.getEmail())
                 .add("username", user.getUsername())
                 .add("password", user.getPassword())
@@ -60,7 +60,7 @@ public class JdbcUserRepository extends BaseDao implements UserRepository {
 
     @Override
     public void update(User user) {
-        SqlParameterSource parameters = parameters(User.class)
+        SqlParameterSource parameters = parameters()
                 .add("email", user.getEmail())
                 .add("username", user.getUsername())
                 .add("password", user.getPassword())

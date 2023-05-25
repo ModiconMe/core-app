@@ -135,24 +135,16 @@ abstract public class BaseDao {
 
         MapSqlParameterSource parameters = new MapSqlParameterSource();
 
-        static List<String> fields;
-
         static SqlParameterSource getParameterOf(final String key, final Object value) {
             return new MapSqlParameterSource(key, value);
         }
 
-        static ParamBuilder parameters(final Class<?> clazz) {
-            fields = Arrays.stream(clazz.getDeclaredFields())
-                    .map(Field::getName)
-                    .toList();
+        static ParamBuilder parameters() {
             return new ParamBuilder();
         }
 
         ParamBuilder add(final String key, final Object value) {
-            if
-                (fields.contains(key)) parameters.addValue(key, value);
-            else
-                throw unprocessableEntity("Field not found", key);
+            parameters.addValue(key, value);
             return this;
         }
 

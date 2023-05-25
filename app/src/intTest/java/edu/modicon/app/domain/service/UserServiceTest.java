@@ -2,6 +2,10 @@ package edu.modicon.app.domain.service;
 
 import edu.modicon.app.BaseTest;
 import edu.modicon.app.application.dto.*;
+import edu.modicon.app.application.dto.user.UserDto;
+import edu.modicon.app.application.dto.user.UserLoginRequest;
+import edu.modicon.app.application.dto.user.UserRegistrationRequest;
+import edu.modicon.app.application.dto.user.UserUpdateRequest;
 import edu.modicon.app.infrastructure.security.AppUserDetails;
 import edu.modicon.app.infrastructure.security.jwt.JwtUtils;
 import org.junit.jupiter.api.Test;
@@ -29,13 +33,13 @@ class UserServiceTest extends BaseTest {
         );
 
         // when
-        UserDto response = userService.registration(request);
+        UserDto response = userService.registration(request).getUser();
 
-        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.getEmail()));
 
         // then
-        assertThat(response.username()).isEqualTo(request.username());
-        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.username()).isEqualTo(request.getUsername());
+        assertThat(response.email()).isEqualTo(request.getEmail());
         assertThat(response.token()).isEqualTo(token);
         assertThat(response.bio()).isNull();
         assertThat(response.image()).isNull();
@@ -143,13 +147,13 @@ class UserServiceTest extends BaseTest {
         UserLoginRequest request = new UserLoginRequest("test1@mail.com", "password1");
 
         // when
-        UserDto response = userService.login(request);
+        UserDto response = userService.login(request).getUser();
 
-        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.getEmail()));
 
         // then
         assertThat(response.username()).isEqualTo("test1");
-        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.email()).isEqualTo(request.getEmail());
         assertThat(response.token()).isEqualTo(token);
         assertThat(response.bio()).isEqualTo("bio1");
         assertThat(response.image()).isEqualTo("image1");
@@ -222,16 +226,16 @@ class UserServiceTest extends BaseTest {
         );
 
         // when
-        UserDto response = userService.update(request);
+        UserDto response = userService.update(request).getUser();
 
-        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.getEmail()));
 
         // then
-        assertThat(response.username()).isEqualTo(request.username());
-        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.username()).isEqualTo(request.getUsername());
+        assertThat(response.email()).isEqualTo(request.getEmail());
         assertThat(response.token()).isEqualTo(token);
-        assertThat(response.bio()).isEqualTo(request.bio());
-        assertThat(response.image()).isEqualTo(request.image());
+        assertThat(response.bio()).isEqualTo(request.getBio());
+        assertThat(response.image()).isEqualTo(request.getImage());
     }
 
     @Test
@@ -247,13 +251,13 @@ class UserServiceTest extends BaseTest {
         );
 
         // when
-        UserDto response = userService.update(request);
+        UserDto response = userService.update(request).getUser();
 
-        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.email()));
+        String token = jwtUtils.generateAccessToken(AppUserDetails.ofUsername(request.getEmail()));
 
         // then
-        assertThat(response.username()).isEqualTo(request.username());
-        assertThat(response.email()).isEqualTo(request.email());
+        assertThat(response.username()).isEqualTo(request.getUsername());
+        assertThat(response.email()).isEqualTo(request.getEmail());
         assertThat(response.token()).isEqualTo(token);
         assertThat(response.bio()).isEqualTo("bio1");
         assertThat(response.image()).isEqualTo("image1");

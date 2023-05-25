@@ -1,8 +1,9 @@
 package edu.modicon.app.application.api;
 
-import edu.modicon.app.application.dto.UserDto;
-import edu.modicon.app.application.dto.UserLoginRequest;
-import edu.modicon.app.application.dto.UserRegistrationRequest;
+import edu.modicon.app.application.dto.user.UserLoginRequest;
+import edu.modicon.app.application.dto.user.UserLoginResponse;
+import edu.modicon.app.application.dto.user.UserRegistrationRequest;
+import edu.modicon.app.application.dto.user.UserRegistrationResponse;
 import edu.modicon.app.domain.constant.Constant;
 import edu.modicon.app.domain.service.UserService;
 import jakarta.validation.Valid;
@@ -20,12 +21,12 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/login")
-    public UserDto login(@Valid @RequestBody UserLoginRequest request) {
+    public UserLoginResponse login(@Valid @RequestBody UserLoginRequest request) {
         return userService.login(request);
     }
 
     @PostMapping
-    public UserDto registration(@Valid @RequestBody UserRegistrationRequest request) {
+    public UserRegistrationResponse registration(@Valid @RequestBody UserRegistrationRequest request) {
         return userService.registration(request);
     }
 }

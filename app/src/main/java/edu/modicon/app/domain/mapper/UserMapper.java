@@ -1,6 +1,6 @@
 package edu.modicon.app.domain.mapper;
 
-import edu.modicon.app.application.dto.UserDto;
+import edu.modicon.app.application.dto.user.UserDto;
 import edu.modicon.app.domain.model.User;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,8 @@
 package edu.modicon.app.application.api;
 
-import edu.modicon.app.application.dto.UserDto;
-import edu.modicon.app.application.dto.UserUpdateRequest;
+import edu.modicon.app.application.dto.user.UserDto;
+import edu.modicon.app.application.dto.user.UserUpdateRequest;
+import edu.modicon.app.application.dto.user.UserUpdateResponse;
 import edu.modicon.app.domain.constant.Constant;
 import edu.modicon.app.domain.service.UserService;
 import edu.modicon.app.infrastructure.security.AppUserDetails;
@@ -25,7 +26,7 @@ public class UserController {
         return userService.currentUser(user);
     }
 
-    public UserDto update(@Valid @RequestBody UserUpdateRequest request, @AuthenticationPrincipal AppUserDetails user) {
+    public UserUpdateResponse update(@Valid @RequestBody UserUpdateRequest request, @AuthenticationPrincipal AppUserDetails user) {
         return userService.update(request.withCurrentUsername(user.getUsername()));
     }
 }

@@ -4,9 +4,6 @@ spring:
     username: saeed
     password: root
     driver-class-name: org.postgresql.Driver
-  jackson:
-    deserialization:
-      unwrap_root_value: true
 
 logging:
   level:

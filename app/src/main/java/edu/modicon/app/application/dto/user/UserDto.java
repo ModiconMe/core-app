@@ -1,4 +1,4 @@
-package edu.modicon.app.application.dto;
+package edu.modicon.app.application.dto.user;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

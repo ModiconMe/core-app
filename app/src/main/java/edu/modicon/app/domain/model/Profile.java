@@ -1,19 +1,17 @@
 package edu.modicon.app.domain.model;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
+@Setter
+@Getter
 @ToString
 @EqualsAndHashCode
 @Builder(toBuilder = true)
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Profile {
-
-    private final String username;
-    private final String bio;
-    private final String image;
-    private final Boolean following;
-
+    private String username;
+    private String bio;
+    private String image;
+    private boolean following;
 }
