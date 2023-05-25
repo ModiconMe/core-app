@@ -26,4 +26,22 @@ public class JdbcProfileRepository extends BaseDao implements ProfileRepository 
                 .build();
         return single(Sql.Profile.FIND_BY_USERNAME, params, new BeanPropertyRowMapper<>(Profile.class));
     }
+
+    @Override
+    public void followProfile(String profileUsername, String currentUsername) {
+        SqlParameterSource params = parameters()
+                .add("profileUsername", profileUsername)
+                .add("currentUsername", currentUsername)
+                .build();
+        update(Sql.Profile.FOLLOW, params);
+    }
+
+    @Override
+    public void unfollowProfile(String profileUsername, String currentUsername) {
+        SqlParameterSource params = parameters()
+                .add("profileUsername", profileUsername)
+                .add("currentUsername", currentUsername)
+                .build();
+        update(Sql.Profile.UNFOLLOW, params);
+    }
 }

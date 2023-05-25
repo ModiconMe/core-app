@@ -10,12 +10,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 import static edu.modicon.app.application.dto.ApiException.*;
 import static org.springframework.util.StringUtils.hasText;
 
+@Transactional
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
 
+    @Transactional(readOnly = true)
     @Override
     public UserLoginResponse login(UserLoginRequest request) {
         Optional<User> byEmail = userRepository.findByEmail(request.getEmail());
@@ -71,6 +74,7 @@ public class UserServiceImpl implements UserService {
         return new UserRegistrationResponse(dto);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public UserDto currentUser(AppUserDetails request) {
         Optional<User> byEmail = userRepository.findByEmail(request.email());

@@ -64,5 +64,17 @@ abstract public class Sql {
                   FROM users
                  WHERE username = :profileUsername
                 """;
+
+        public static final String FOLLOW = """
+                INSERT INTO follow_relation (id_followee, id_follower)
+                VALUES ((SELECT id FROM users WHERE username = :currentUsername),
+                        (SELECT id FROM users WHERE username = :profileUsername));
+                """;
+
+        public static final String UNFOLLOW = """
+                DELETE FROM follow_relation
+                 WHERE id_followee = (SELECT id FROM users WHERE username = :currentUsername)
+                   AND id_follower = (SELECT id FROM users WHERE username = :profileUsername);
+                """;
     }
 }
