@@ -1,9 +1,6 @@
 package edu.modicon.app.domain.service;
 
-import edu.modicon.app.application.dto.profile.FollowProfileRequest;
-import edu.modicon.app.application.dto.profile.FollowProfileResponse;
-import edu.modicon.app.application.dto.profile.GetProfileRequest;
-import edu.modicon.app.application.dto.profile.GetProfileResponse;
+import edu.modicon.app.application.dto.profile.*;
 import edu.modicon.app.domain.mapper.ProfileMapper;
 import edu.modicon.app.domain.model.Profile;
 import edu.modicon.app.domain.repository.ProfileRepository;
@@ -45,11 +42,15 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public FollowProfileResponse followProfile(FollowProfileRequest request) {
-        profileRepository.followProfile(request.getUsername(), request.getCurrentUsername());
-        return new FollowProfileResponse(
-                profileMapper.apply(
-                        getValidProfile(request.getUsername(), request.getCurrentUsername())
-                )
-        );
+        Profile profile = getValidProfile(request.getUsername(), request.getCurrentUsername());
+        boolean isFollow = profileRepository.followProfile(profile.getUsername(), request.getCurrentUsername());
+        return new FollowProfileResponse(profileMapper.apply(profile.withFollowing(isFollow)));
+    }
+
+    @Override
+    public UnfollowProfileResponse unfollowProfile(UnfollowProfileRequest request) {
+        Profile profile = getValidProfile(request.getUsername(), request.getCurrentUsername());
+        boolean isFollow = profileRepository.unfollowProfile(profile.getUsername(), request.getCurrentUsername());
+        return new UnfollowProfileResponse(profileMapper.apply(profile.withFollowing(!isFollow)));
     }
 }

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.With;
 
 @Getter
-public class FollowProfileRequest {
+public class UnfollowProfileRequest {
 
     private final String username;
 
@@ -14,7 +14,7 @@ public class FollowProfileRequest {
     private final String currentUsername;
 
     @JsonCreator
-    public FollowProfileRequest(
+    public UnfollowProfileRequest(
             @JsonProperty("username") String username,
             String currentUsername
     ) {

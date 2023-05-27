@@ -5,3 +5,6 @@ VALUES (1, 'test1@mail.com', 'test1', '$2y$10$5yw7PqzBDiFeqAXzUJRd6.4gwgS18kvSno
        (4, 'test4@mail.com', 'test4', '$2y$10$YqWsXFXg.zMyxkvT4OXqNuKPO7V28kvZOQx/va92rJFWs3q2uglne', 'bio4', 'image4'),
        (5, 'test5@mail.com', 'test5', '$2y$10$OVZ0BhEIVSVsgvFrj3mOB.R/YXIzg10Vu3nZU/dNdsDm4jbr/XVWy', 'bio5', 'image5');
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
+
+INSERT INTO follow_relation (id_followee, id_follower)
+VALUES (1, 2), (3, 2);

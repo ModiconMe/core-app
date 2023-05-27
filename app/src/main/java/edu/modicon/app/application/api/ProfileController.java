@@ -1,9 +1,6 @@
 package edu.modicon.app.application.api;
 
-import edu.modicon.app.application.dto.profile.FollowProfileRequest;
-import edu.modicon.app.application.dto.profile.FollowProfileResponse;
-import edu.modicon.app.application.dto.profile.GetProfileRequest;
-import edu.modicon.app.application.dto.profile.GetProfileResponse;
+import edu.modicon.app.application.dto.profile.*;
 import edu.modicon.app.domain.constant.Constant;
 import edu.modicon.app.domain.service.ProfileService;
 import edu.modicon.app.infrastructure.security.AppUserDetails;
@@ -26,5 +23,10 @@ public class ProfileController {
     @PostMapping("{username}/follow")
     public FollowProfileResponse followUser(@PathVariable String username, @AuthenticationPrincipal AppUserDetails currentUser) {
         return profileService.followProfile(new FollowProfileRequest(username, currentUser.getUsername()));
+    }
+
+    @DeleteMapping("{username}/follow")
+    public UnfollowProfileResponse unfollowUser(@PathVariable String username, @AuthenticationPrincipal AppUserDetails currentUser) {
+        return profileService.unfollowProfile(new UnfollowProfileRequest(username, currentUser.getUsername()));
     }
 }
