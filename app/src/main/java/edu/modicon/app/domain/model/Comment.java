@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.time.ZonedDateTime;
-import java.util.List;
 
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
