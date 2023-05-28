@@ -1,8 +1,6 @@
 package edu.modicon.app;
 
 import com.github.javafaker.Faker;
-import edu.modicon.app.domain.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;

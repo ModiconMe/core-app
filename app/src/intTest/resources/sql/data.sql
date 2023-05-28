@@ -8,3 +8,10 @@ SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 
 INSERT INTO follow_relation (id_followee, id_follower)
 VALUES (1, 2), (3, 2);
+
+INSERT INTO article (id, slug, title, description, body, user_id)
+VALUES (1, 'test-slug-1', 'title1', 'description1', 'body1', 1),
+       (2, 'test-slug-2', 'title2', 'description2', 'body2', 1),
+       (3, 'test-slug-3', 'title3', 'description3', 'body3', 2),
+       (4, 'test-slug-4', 'title4', 'description4', 'body4', 4),
+       (5, 'test-slug-5', 'title5', 'description5', 'body5', 5);

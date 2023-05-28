@@ -1,6 +1,8 @@
-package edu.modicon.app.application.dto.user;
+package edu.modicon.app.application.request;
 
 import com.fasterxml.jackson.annotation.*;
+import edu.modicon.app.application.response.UserUpdateResponse;
+import edu.modicon.app.infrastructure.bus.Command;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -12,7 +14,7 @@ import static org.springframework.util.StringUtils.hasText;
 @Getter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonTypeName("user")
-public class UserUpdateRequest {
+public class UserUpdateRequest implements Command<UserUpdateResponse> {
 
     @Size(min = 1, max = 128)
     private final String username;

@@ -1,9 +1,11 @@
-package edu.modicon.app.application.dto.user;
+package edu.modicon.app.application.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import edu.modicon.app.application.response.UserRegistrationResponse;
+import edu.modicon.app.infrastructure.bus.Command;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -12,7 +14,7 @@ import lombok.Getter;
 @Getter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonTypeName("user")
-public class UserRegistrationRequest {
+public class UserRegistrationRequest implements Command<UserRegistrationResponse> {
 
     @NotEmpty
     @Size(min = 1, max = 128)

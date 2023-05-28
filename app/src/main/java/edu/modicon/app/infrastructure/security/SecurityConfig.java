@@ -29,22 +29,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        return http
-                .csrf().disable()
-                .cors().and()
-                .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and()
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class) // use jwt filter
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .authorizeHttpRequests()
+        http.csrf().disable()
+                .cors();
+
+        http.exceptionHandling()
+                .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)).and()
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authorizeHttpRequests()
                 .requestMatchers(SWAGGER).permitAll()
-                .requestMatchers(HttpMethod.GET, "/*").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/users", "/api/users/login").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/articles/feed").authenticated()
                 .requestMatchers(HttpMethod.GET, "/api/articles", "/api/articles/**", "/api/tags", "/api/profiles/**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .build();
+                .anyRequest().authenticated();
+
+        return http.build();
     }
 
 }

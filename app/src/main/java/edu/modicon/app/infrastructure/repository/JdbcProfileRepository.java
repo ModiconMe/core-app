@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+import static edu.modicon.app.infrastructure.repository.BaseDao.ParamBuilder.getParameterOf;
 import static edu.modicon.app.infrastructure.repository.BaseDao.ParamBuilder.parameters;
 
 @Repository
@@ -25,6 +26,11 @@ public class JdbcProfileRepository extends BaseDao implements ProfileRepository 
                 .add("currentUsername", currentUsername)
                 .build();
         return single(Sql.Profile.FIND_BY_USERNAME, params, new BeanPropertyRowMapper<>(Profile.class));
+    }
+
+    @Override
+    public Optional<Profile> findById(Long id) {
+        return single(Sql.Profile.FIND_BY_ID, getParameterOf(PARAM_ID, id), new BeanPropertyRowMapper<>(Profile.class));
     }
 
     @Override

@@ -4,15 +4,21 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import edu.modicon.app.application.dto.user.UserLoginRequest;
+import edu.modicon.app.application.request.UserLoginRequest;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class UserLoginRequestTest extends BaseJsonValidationTest {
+class UserLoginRequestTest {
+
+    ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    Validator validator = factory.getValidator();
 
     @Test
     void toJson() throws JsonProcessingException {

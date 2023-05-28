@@ -1,4 +1,4 @@
-package edu.modicon.app.application.api;
+package edu.modicon.app.application.api.controller;
 
 import edu.modicon.app.application.dto.profile.*;
 import edu.modicon.app.domain.constant.Constant;

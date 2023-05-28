@@ -8,6 +8,8 @@ public interface ProfileRepository {
 
     Optional<Profile> findByUsername(String profileUsername, String currentUsername);
 
+    Optional<Profile> findById(Long id);
+
     boolean followProfile(String username, String currentUsername);
 
     boolean unfollowProfile(String username, String currentUsername);
