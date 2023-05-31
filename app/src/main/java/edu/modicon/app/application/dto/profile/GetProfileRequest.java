@@ -4,17 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import edu.modicon.app.infrastructure.bus.Query;
 import lombok.Getter;
 import lombok.With;
 
 @Getter
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.WRAPPER_OBJECT)
 @JsonTypeName("profile")
-public class GetProfileRequest {
+public class GetProfileRequest implements Query<GetProfileResponse> {
 
     private final String username;
-
-    @With
     private final String currentUsername;
 
     @JsonCreator
@@ -26,4 +25,3 @@ public class GetProfileRequest {
         this.currentUsername = currentUsername;
     }
 }
-
